@@ -1,0 +1,93 @@
+import argparse
+import sys
+
+
+def get_params():
+    """Argument parser."""
+    parser = argparse.ArgumentParser(
+        prog="note",
+        description="Note Taking Utility"
+    )
+    subparsers = parser.add_subparsers(
+        title='commands',
+        description='valid commands',
+        help='additional help available for each'
+    )
+
+    add_parser = subparsers.add_parser("add")
+    add_parser.add_argument(
+        "note",
+        help="The note to be entered"
+    )
+    add_parser.add_argument(
+        "-t", "--tag",
+        dest="tags",
+        action="append",
+        help="Add a category tag for the note",
+        required=False
+    )
+
+    edit_parser = subparsers.add_parser("edit")
+    edit_parser.add_argument(
+        "note_id",
+        type=int,
+        help="Edit an existing note"
+    )
+
+    list_parser = subparsers.add_parser("show")
+    list_parser.add_argument(
+        "-n", "--notes",
+        dest="show_notes",
+        action="store_true",
+        help="Show all of the notes that have been entered today"
+    )
+    list_parser.add_argument(
+        "-t", "--tags",
+        dest="show_tags",
+        action="store_true",
+        help="Show all of the tags in use"
+    )
+
+    stats_parser = subparsers.add_parser("stats")
+    stats_parser.add_argument(
+        "-a", "--all",
+        dest="stats_all",
+        action="store_true",
+        help="Display statistics for all entries",
+        required=False
+    )
+    stats_parser.add_argument(
+        "-d", "--day",
+        dest="stats_day",
+        action="store_true",
+        help="Display running statistics for the current day",
+        required=False
+    )
+    stats_parser.add_argument(
+        "-w", "--week",
+        dest="stats_week",
+        action="store_true",
+        help="Display statistics for the current week",
+        required=False
+    )
+    stats_parser.add_argument(
+        "-m", "--month",
+        dest="stats_month",
+        action="store_true",
+        help="Display statistics for the current month",
+        required=False
+    )
+    stats_parser.add_argument(
+        "-y", "--year",
+        dest="stats_year",
+        action="store_true",
+        help="Display statistics for the current year",
+        required=False
+    )
+
+    kwargs = vars(parser.parse_args())
+    if not kwargs:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+
+    return kwargs
