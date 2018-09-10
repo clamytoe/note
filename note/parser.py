@@ -1,5 +1,5 @@
 import argparse
-import sys
+from sys import stderr
 
 
 def get_params():
@@ -87,7 +87,7 @@ def get_params():
 
     kwargs = vars(parser.parse_args())
     if not kwargs:
-        parser.print_help(sys.stderr)
-        sys.exit(1)
+        parser.print_help(stderr)
+        exit(1)
 
     return kwargs
