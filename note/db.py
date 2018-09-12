@@ -9,7 +9,7 @@ CREATE_NOTES_TABLES_SQL = """
 CREATE TABLE IF NOT EXISTS notes (
     id integer PRIMARY KEY,
     note text NOT NULL,
-    tags text NOT NULL,
+    tags text,
     date text NOT NULL
 );
 """
@@ -20,7 +20,7 @@ def db_connect(db=DATABASE):
     return sqlite3.connect(db)
 
 
-def check_db():
+def db_check():
     try:
         with db_connect() as conn:
             cursor = conn.cursor()
@@ -31,7 +31,7 @@ def check_db():
         return False
 
 
-def next_id():
+def db_next_id():
     with db_connect() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT id FROM notes ORDER BY id DESC LIMIT 1")
@@ -39,24 +39,34 @@ def next_id():
     return last[0] + 1 if last is not None else 1
 
 
-def add_note(note):
+def db_add_note(note):
     with db_connect() as conn:
+        print(f"RECEIVED TAGS: {note.tags} TYPE: {type(note.tags)}")
+        tags = ", ".join(note.tags)
         cursor = conn.cursor()
         cursor.execute(
             f"INSERT INTO notes (id, note, tags, date) VALUES "
-            f"({note.id}, '{note.note}', '{note.tags}', '{note.date}');"
+            f"({note.id}, '{note.note}', '{tags}', '{note.date}');"
         )
         conn.commit()
 
 
-def view_notes():
+def db_get_note(note_id):
     with db_connect() as conn:
         cursor = conn.cursor()
-        for row in cursor.execute('SELECT * FROM notes ORDER BY id DESC'):
-            print(row)
+        cursor.execute(f'SELECT * FROM notes WHERE id = {note_id}')
+        return cursor.fetchone()
 
 
-def display_note(note):
+def db_view_notes(limit):
+    with db_connect() as conn:
+        cursor = conn.cursor()
+        for i, row in enumerate(cursor.execute('SELECT * FROM notes ORDER BY id DESC')):
+            if i < limit:
+                print(row)
+
+
+def db_display_note(note):
     print(f"  ID: {note.id}")
     print(f"NOTE: {note.note}")
     print(f"TAGS: {note.tags}")
@@ -64,9 +74,9 @@ def display_note(note):
 
 
 if __name__ == "__main__":
-    if check_db():
-        _id = next_id()
+    if db_check():
+        _id = db_next_id()
         note = Note(_id, "This is my first note", "sqlite3, python", str(datetime.today()))
-        add_note(note)
-        view_notes()
-        print(f"NEXT RECORD: {next_id()}")
+        db_add_note(note)
+        db_view_notes()
+        print(f"NEXT RECORD: {db_next_id()}")
