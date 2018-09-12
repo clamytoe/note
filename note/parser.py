@@ -5,6 +5,7 @@ from sys import stderr
 
 def get_params():
     """Argument parser."""
+    today, time = str(datetime.today()).split(".")[0].split()
     parser = argparse.ArgumentParser(
         prog="note",
         description="Note Taking Utility"
@@ -22,7 +23,13 @@ def get_params():
     )
     add_parser.add_argument(
         "-d", "--date",
-        default=str(datetime.today()).split(".")[0]
+        default=today,
+        help="The date in YYYY-MM-DD format"
+    )
+    add_parser.add_argument(
+        "--time",
+        default=time,
+        help="The time in HH:MM:SS format"
     )
     add_parser.add_argument(
         "-t", "--tag",
