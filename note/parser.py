@@ -1,4 +1,5 @@
 import argparse
+from datetime import datetime
 from sys import stderr
 
 
@@ -18,6 +19,10 @@ def get_params():
     add_parser.add_argument(
         "note",
         help="The note to be entered"
+    )
+    add_parser.add_argument(
+        "-d", "--date",
+        default=str(datetime.today()).split(".")[0]
     )
     add_parser.add_argument(
         "-t", "--tag",
@@ -46,6 +51,14 @@ def get_params():
         dest="show_tags",
         action="store_true",
         help="Show all of the tags in use"
+    )
+    list_parser.add_argument(
+        "-l", "--limit",
+        dest="show_limit",
+        type=int,
+        default=10,
+        help="Limit the amount of notes returned, defaults to 10",
+        required=False
     )
 
     stats_parser = subparsers.add_parser("stats")
