@@ -10,10 +10,11 @@ CREATE TABLE IF NOT EXISTS notes (
     id integer PRIMARY KEY,
     note text NOT NULL,
     tags text,
-    date text NOT NULL
+    date text NOT NULL,
+    time text NOT NULL
 );
 """
-Note = namedtuple("Note", "id note tags date")
+Note = namedtuple("Note", "id note tags date time")
 
 
 def db_connect(db=DATABASE):
@@ -41,12 +42,11 @@ def db_next_id():
 
 def db_add_note(note):
     with db_connect() as conn:
-        print(f"RECEIVED TAGS: {note.tags} TYPE: {type(note.tags)}")
         tags = ", ".join(note.tags)
         cursor = conn.cursor()
         cursor.execute(
-            f"INSERT INTO notes (id, note, tags, date) VALUES "
-            f"({note.id}, '{note.note}', '{tags}', '{note.date}');"
+            f"INSERT INTO notes (id, note, tags, date, time) VALUES "
+            f"({note.id}, '{note.note}', '{tags}', '{note.date}', '{note.time}');"
         )
         conn.commit()
 
@@ -74,9 +74,13 @@ def db_display_note(note):
 
 
 if __name__ == "__main__":
-    if db_check():
+    db = "test.db"
+    note = "This is my first note"
+    tags = "sqlite3 python".split()
+    today, time = str(datetime.today()).split(".")[0].split()
+    if db_check(db):
         _id = db_next_id()
-        note = Note(_id, "This is my first note", "sqlite3, python", str(datetime.today()))
-        db_add_note(note)
+        new_note = Note(_id, note, tags, today, time)
+        db_add_note(new_note)
         db_view_notes()
         print(f"NEXT RECORD: {db_next_id()}")
