@@ -16,6 +16,7 @@ def add_note(note):
     print(f"Note: {note.note}")
     print(f"Tags: {', '.join(note.tags)}")
     print(f"Date: {note.date}")
+    print(f"time: {note.time}")
 
 
 def display_stats():
@@ -23,16 +24,19 @@ def display_stats():
 
 
 def edit_note(note_id):
-    _id, note, tags, date = db_get_note(note_id)
+    _id, note, tags, date, time = db_get_note(note_id)
     print(f"EDITING NOTE #{_id}:")
     print(f"  (n)ote: {note}")
     print(f"  (t)ags: {tags}")
     print(f"  (d)ate: {date}")
-    choice = input("Which would you like to edit ([n]/t/d)? ")
+    print(f"  (h)our: {time}")
+    choice = input("Which would you like to edit ([n]/t/d/h)? ")
     if choice.lower().startswith("t"):
         print(f"{tags}: ")
     elif choice.lower().startswith("d"):
         print(f"{date}: ")
+    elif choice.lower().startswith("h"):
+        print(f"{time}: ")
     else:
         print(f"{note}: ")
 
@@ -47,8 +51,9 @@ def main():
 
     # note and tags
     note = params.get("note")
-    date = params.get("date")
     tags = params.get("tags")
+    date = params.get("date")
+    time = params.get("time")
 
     # edit note id
     note_id = params.get("note_id")
@@ -65,7 +70,7 @@ def main():
     stats_month = params.get("stats_month")
     stats_year = params.get("stats_year")
 
-    tags = ", ".join(tags) if tags else None
+    tags = tags if tags else None
 
     if stats_all:
         print(f"STATS ALL: {stats_all}")
@@ -84,7 +89,7 @@ def main():
 
     if db_check():
         if note:
-            new_note = Note(db_next_id(), note, tags, date)
+            new_note = Note(db_next_id(), note, tags, date, time)
             add_note(new_note)
 
         if show_notes:
