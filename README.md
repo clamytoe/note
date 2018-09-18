@@ -2,7 +2,6 @@
 > *Facilitates with jotting down what you've done or learned each day.*
 
 ![Python version][python-version]
-[![Build Status][travis-image]][travis-url]
 [![BCH compliance][bch-image]][bch-url]
 [![GitHub issues][issues-image]][issues-url]
 [![GitHub forks][fork-image]][fork-url]
@@ -63,8 +62,6 @@ If you encounter any problems, please [file an issue](https://github.com/clamyto
 * **v0.1.0** Initial commit.
 
 [python-version]:https://img.shields.io/badge/python-3.7-brightgreen.svg
-[travis-image]:https://travis-ci.org/clamytoe/note.svg?branch=master
-[travis-url]:https://travis-ci.org/clamytoe/note
 [bch-image]:https://bettercodehub.com/edge/badge/clamytoe/note?branch=master
 [bch-url]:https://bettercodehub.com/
 [issues-image]:https://img.shields.io/github/issues/clamytoe/note.svg
