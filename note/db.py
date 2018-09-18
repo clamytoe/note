@@ -64,19 +64,20 @@ def db_add_note(note):
 def db_get_note(note_id):
     with db_connect() as conn:
         cursor = conn.cursor()
-        cursor.execute(f'SELECT * FROM notes WHERE id = {note_id}')
+        cursor.execute(f'SELECT * FROM notes WHERE id LIKE {note_id}')
         return cursor.fetchone()
 
 
 def db_view_notes(note_id, limit):
-    _id = note_id if note_id else "*"
+    _id = note_id if note_id != -1 else None
     with db_connect() as conn:
         cursor = conn.cursor()
-        for i, row in enumerate(cursor.execute(f'SELECT {_id} FROM notes ORDER BY id DESC')):
-            if _id == "*":
-                if i < limit:
-                    print(row)
-            else:
+        if _id:
+            sql = f"SELECT * FROM notes WHERE id LIKE {_id}"
+            print(cursor.execute(sql).fetchone())
+        else:
+            sql = f"SELECT * FROM notes ORDER BY id DESC LIMIT {limit}"
+            for i, row in enumerate(cursor.execute(sql)):
                 print(row)
 
 

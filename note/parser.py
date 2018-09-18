@@ -48,16 +48,12 @@ def get_params():
 
     list_parser = subparsers.add_parser("show")
     list_parser.add_argument(
-        "-n", "--notes",
-        dest="show_notes",
-        action="store_true",
-        help="Show all of the notes that have been entered today"
-    )
-    list_parser.add_argument(
-        "-t", "--tags",
-        dest="show_tags",
-        action="store_true",
-        help="Show all of the tags in use"
+        "-n", "--note",
+        dest="note_id",
+        type=int,
+        default=-1,
+        help="Show a specific note by providing its id",
+        required=False
     )
     list_parser.add_argument(
         "-l", "--limit",

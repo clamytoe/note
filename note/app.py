@@ -41,13 +41,14 @@ def edit_note(note_id):
         print(f"{note}: ")
 
 
-def list_notes(limit):
+def list_notes(note_id, limit):
     print("Listing notes")
-    db_view_notes(limit)
+    db_view_notes(note_id, limit)
 
 
 def main():
     params = get_params()
+    print(params)
 
     # note and tags
     note = params.get("note")
@@ -59,8 +60,7 @@ def main():
     edit_id = params.get("edit_id")
 
     # show notes and tags
-    show_notes = params.get("show_notes")
-    show_tags = params.get("show_tags")
+    note_id = params.get("note_id")
     show_limit = params.get("show_limit")
 
     # stats
@@ -92,8 +92,9 @@ def main():
             new_note = Note(db_next_id(), note, tags, date, time)
             add_note(new_note)
 
-        if show_notes:
-            list_notes(show_limit)
+        if note_id:
+            print(f"Showing note: {note_id}")
+            list_notes(note_id, show_limit)
 
         if edit_id:
             edit_note(edit_id)
