@@ -12,12 +12,9 @@ logger = setup_logging()
 
 def add_note(note):
     db_add_note(note)
-    print(f"Added note:")
-    print(f"  ID: {note.id}")
-    print(f"Note: {note.note}")
-    print(f"Tags: {', '.join(note.tags)}")
-    print(f"Date: {note.date}")
-    print(f"time: {note.time}")
+    print(f"Added note: {note.date} {note.time}")
+    print(f"[{note.id}] {note.note}")
+    print(f"[{', '.join(note.tags)}]")
 
 
 def delete_note(delete_id):
@@ -42,15 +39,19 @@ def edit_note(note_id):
     print(f"  (t)ags: {tags}")
     print(f"  (d)ate: {date}")
     print(f"  (h)our: {time}")
-    choice = input("Which would you like to edit ([n]/t/d/h)? ")
-    if choice.lower().startswith("t"):
+    choice = input("Which would you like to edit (n/t/d/h)? ")
+    if choice.lower().startswith("n"):
+        note = input(f"{note}: ")
+    elif choice.lower().startswith("t"):
         tags = input(f"{tags}: ")
     elif choice.lower().startswith("d"):
         date = input(f"{date}: ")
     elif choice.lower().startswith("h"):
         time = input(f"{time}: ")
     else:
-        note = input(f"{note}: ")
+        print("Edit aborted!")
+        exit()
+
     db_update_note(Note(_id, note, tags, date, time))
 
 
