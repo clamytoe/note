@@ -1,6 +1,5 @@
 import sqlite3
 from collections import namedtuple
-from datetime import datetime
 from os import makedirs, path
 from sqlite3 import Error
 
@@ -26,15 +25,30 @@ def check_dir():
         makedirs(NOTES_HOME)
 
 
-def db_add_note(note):
+def db_action(sql, respond=False, data=None):
     with db_connect() as conn:
-        tags = ", ".join(note.tags)
         cursor = conn.cursor()
-        cursor.execute(
-            f"INSERT INTO notes (id, note, tags, date, time) VALUES "
-            f"({note.id}, '{note.note}', '{tags}', '{note.date}', '{note.time}');"
-        )
+        if data:
+            result = cursor.execute(sql, data)
+        else:
+            result = cursor.execute(sql)
         conn.commit()
+    if respond:
+        return result
+
+
+def db_add_note(note):
+    tags = ", ".join(note.tags)
+    sql = f"""
+    INSERT INTO notes
+    VALUES (
+        {note.id}, 
+        '{note.note}', 
+        '{tags}', 
+        '{note.date}', 
+        '{note.time}'
+    );"""
+    db_action(sql)
 
 
 def db_connect(db=DATABASE):
@@ -44,9 +58,7 @@ def db_connect(db=DATABASE):
 
 def db_check():
     try:
-        with db_connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute(CREATE_NOTES_TABLES_SQL)
+        db_action(CREATE_NOTES_TABLES_SQL)
         return True
     except Error as e:
         print(f"Could not connect to the database: {e}")
@@ -54,24 +66,19 @@ def db_check():
 
 
 def db_delete_note(note_id):
-    with db_connect() as conn:
-        cursor = conn.cursor()
-        cursor.execute(f"DELETE FROM notes WHERE id LIKE {note_id}")
-        conn.commit()
+    db_action(f"DELETE FROM notes WHERE id LIKE {note_id}")
 
 
 def db_get_note(note_id):
-    with db_connect() as conn:
-        cursor = conn.cursor()
-        cursor.execute(f'SELECT * FROM notes WHERE id LIKE {note_id}')
-        return cursor.fetchone()
+    sql = f"SELECT * FROM notes WHERE id LIKE {note_id}"
+    result = db_action(sql, respond=True)
+    return result.fetchone()
 
 
 def db_next_id():
-    with db_connect() as conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT id FROM notes ORDER BY id DESC LIMIT 1")
-        last = cursor.fetchone()
+    sql = "SELECT id FROM notes ORDER BY id DESC LIMIT 1"
+    result = db_action(sql, respond=True)
+    last = result.fetchone()
     return last[0] + 1 if last is not None else 1
 
 
@@ -85,27 +92,9 @@ def db_update_note(note):
         time = ?
     WHERE id LIKE {note.id}
     """
-    with db_connect() as conn:
-        cursor = conn.cursor()
-        cursor.execute(sql, note)
-        conn.commit()
+    db_action(sql, data=note)
 
 
 def db_view_notes(limit):
-    with db_connect() as conn:
-        cursor = conn.cursor()
-        sql = f"SELECT * FROM notes ORDER BY id DESC LIMIT {limit}"
-        return cursor.execute(sql)
-
-
-if __name__ == "__main__":
-    db = "test.db"
-    note = "This is my first note"
-    tags = "sqlite3 python".split()
-    today, time = str(datetime.today()).split(".")[0].split()
-    if db_check(db):
-        _id = db_next_id()
-        new_note = Note(_id, note, tags, today, time)
-        db_add_note(new_note)
-        db_view_notes()
-        print(f"NEXT RECORD: {db_next_id()}")
+    sql = f"SELECT * FROM notes ORDER BY id DESC LIMIT {limit}"
+    return db_action(sql, respond=True)
