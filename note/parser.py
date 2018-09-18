@@ -39,11 +39,18 @@ def get_params():
         required=False
     )
 
+    delete_parser = subparsers.add_parser("delete")
+    delete_parser.add_argument(
+        "delete_id",
+        type=int,
+        help="Delete the selected note"
+    )
+
     edit_parser = subparsers.add_parser("edit")
     edit_parser.add_argument(
         "edit_id",
         type=int,
-        help="Edit an existing note"
+        help="Edit the selected note"
     )
 
     list_parser = subparsers.add_parser("show")

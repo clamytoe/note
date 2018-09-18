@@ -4,19 +4,31 @@ app.py
 
 Note taking utility
 """
-from note import (db_add_note, db_check, db_connect, db_display_note, get_params,
-                  db_next_id, Note, setup_logging, db_get_note, db_view_notes)
+from note import (db_add_note, db_check, db_delete_note, get_params, db_next_id,
+                  Note, setup_logging, db_get_note, db_update_note, db_view_notes)
 
 logger = setup_logging()
 
 
 def add_note(note):
     db_add_note(note)
+    print(f"Added note:")
     print(f"  ID: {note.id}")
     print(f"Note: {note.note}")
     print(f"Tags: {', '.join(note.tags)}")
     print(f"Date: {note.date}")
     print(f"time: {note.time}")
+
+
+def delete_note(delete_id):
+    print(f"You are about to delete note:")
+    print(db_get_note(delete_id))
+    answer = input("Are you sure? (y/[n]) ")
+    if answer.lower().startswith("y"):
+        db_delete_note(delete_id)
+        print(f"Note #{delete_id} was deleted.")
+    else:
+        print(f"Deletion of note #{delete_id} aborted!")
 
 
 def display_stats():
@@ -32,18 +44,23 @@ def edit_note(note_id):
     print(f"  (h)our: {time}")
     choice = input("Which would you like to edit ([n]/t/d/h)? ")
     if choice.lower().startswith("t"):
-        print(f"{tags}: ")
+        tags = input(f"{tags}: ")
     elif choice.lower().startswith("d"):
-        print(f"{date}: ")
+        date = input(f"{date}: ")
     elif choice.lower().startswith("h"):
-        print(f"{time}: ")
+        time = input(f"{time}: ")
     else:
-        print(f"{note}: ")
+        note = input(f"{note}: ")
+    db_update_note(Note(_id, note, tags, date, time))
 
 
 def list_notes(note_id, limit):
     print("Listing notes")
-    db_view_notes(note_id, limit)
+    if note_id == -1:
+        for note in db_view_notes(limit):
+            print(note)
+    else:
+        print(db_get_note(note_id))
 
 
 def main():
@@ -55,6 +72,9 @@ def main():
     tags = params.get("tags")
     date = params.get("date")
     time = params.get("time")
+
+    # delete note id
+    delete_id = params.get("delete_id")
 
     # edit note id
     edit_id = params.get("edit_id")
@@ -92,12 +112,14 @@ def main():
             new_note = Note(db_next_id(), note, tags, date, time)
             add_note(new_note)
 
-        if note_id:
-            print(f"Showing note: {note_id}")
-            list_notes(note_id, show_limit)
+        if delete_id:
+            delete_note(delete_id)
 
         if edit_id:
             edit_note(edit_id)
+
+        if note_id:
+            list_notes(note_id, show_limit)
 
 
 if __name__ == "__main__":

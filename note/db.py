@@ -26,6 +26,17 @@ def check_dir():
         makedirs(NOTES_HOME)
 
 
+def db_add_note(note):
+    with db_connect() as conn:
+        tags = ", ".join(note.tags)
+        cursor = conn.cursor()
+        cursor.execute(
+            f"INSERT INTO notes (id, note, tags, date, time) VALUES "
+            f"({note.id}, '{note.note}', '{tags}', '{note.date}', '{note.time}');"
+        )
+        conn.commit()
+
+
 def db_connect(db=DATABASE):
     check_dir()
     return sqlite3.connect(db)
@@ -42,22 +53,10 @@ def db_check():
         return False
 
 
-def db_next_id():
+def db_delete_note(note_id):
     with db_connect() as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT id FROM notes ORDER BY id DESC LIMIT 1")
-        last = cursor.fetchone()
-    return last[0] + 1 if last is not None else 1
-
-
-def db_add_note(note):
-    with db_connect() as conn:
-        tags = ", ".join(note.tags)
-        cursor = conn.cursor()
-        cursor.execute(
-            f"INSERT INTO notes (id, note, tags, date, time) VALUES "
-            f"({note.id}, '{note.note}', '{tags}', '{note.date}', '{note.time}');"
-        )
+        cursor.execute(f"DELETE FROM notes WHERE id LIKE {note_id}")
         conn.commit()
 
 
@@ -68,24 +67,35 @@ def db_get_note(note_id):
         return cursor.fetchone()
 
 
-def db_view_notes(note_id, limit):
-    _id = note_id if note_id != -1 else None
+def db_next_id():
     with db_connect() as conn:
         cursor = conn.cursor()
-        if _id:
-            sql = f"SELECT * FROM notes WHERE id LIKE {_id}"
-            print(cursor.execute(sql).fetchone())
-        else:
-            sql = f"SELECT * FROM notes ORDER BY id DESC LIMIT {limit}"
-            for i, row in enumerate(cursor.execute(sql)):
-                print(row)
+        cursor.execute("SELECT id FROM notes ORDER BY id DESC LIMIT 1")
+        last = cursor.fetchone()
+    return last[0] + 1 if last is not None else 1
 
 
-def db_display_note(note):
-    print(f"  ID: {note.id}")
-    print(f"NOTE: {note.note}")
-    print(f"TAGS: {note.tags}")
-    print(f"DATE: {note.date}")
+def db_update_note(note):
+    sql = f"""
+    UPDATE notes
+    SET id = ?,
+        note = ?,
+        tags = ?,
+        date = ?,
+        time = ?
+    WHERE id LIKE {note.id}
+    """
+    with db_connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute(sql, note)
+        conn.commit()
+
+
+def db_view_notes(limit):
+    with db_connect() as conn:
+        cursor = conn.cursor()
+        sql = f"SELECT * FROM notes ORDER BY id DESC LIMIT {limit}"
+        return cursor.execute(sql)
 
 
 if __name__ == "__main__":
