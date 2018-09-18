@@ -4,6 +4,8 @@ app.py
 
 Note taking utility
 """
+from os import name, system
+
 from note import (db_add_note, db_check, db_delete_note, get_params, db_next_id,
                   Note, setup_logging, db_get_note, db_update_note, db_view_notes)
 
@@ -11,13 +13,23 @@ logger = setup_logging()
 
 
 def add_note(note):
+    clear_screen()
     db_add_note(note)
     print(f"Added note: {note.date} {note.time}")
     print(f"[{note.id}] {note.note}")
     print(f"[{', '.join(note.tags)}]")
 
 
+def clear_screen():
+    """
+    Clears the screen
+    :return: None
+    """
+    _ = system('cls' if name == 'nt' else 'clear')
+
+
 def delete_note(delete_id):
+    clear_screen()
     print(f"You are about to delete note:")
     print(db_get_note(delete_id))
     answer = input("Are you sure? (y/[n]) ")
@@ -29,10 +41,12 @@ def delete_note(delete_id):
 
 
 def display_stats():
+    clear_screen()
     print("Displaying stats")
 
 
 def edit_note(note_id):
+    clear_screen()
     _id, note, tags, date, time = db_get_note(note_id)
     print(f"EDITING NOTE #{_id}:")
     print(f"  (n)ote: {note}")
@@ -56,6 +70,7 @@ def edit_note(note_id):
 
 
 def list_notes(note_id, limit):
+    clear_screen()
     print("Listing notes")
     if note_id == -1:
         for note in db_view_notes(limit):
