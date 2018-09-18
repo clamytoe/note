@@ -1,9 +1,13 @@
 import sqlite3
 from collections import namedtuple
 from datetime import datetime
+from os import makedirs, path
 from sqlite3 import Error
 
-DATABASE = "notes.db"
+HOME = path.expanduser("~")
+DB_NAME = "notes.db"
+NOTES_HOME = path.join(HOME, ".notes")
+DATABASE = path.join(NOTES_HOME, DB_NAME)
 CREATE_NOTES_TABLES_SQL = """
 -- notes table
 CREATE TABLE IF NOT EXISTS notes (
@@ -17,7 +21,13 @@ CREATE TABLE IF NOT EXISTS notes (
 Note = namedtuple("Note", "id note tags date time")
 
 
+def check_dir():
+    if not path.exists(NOTES_HOME):
+        makedirs(NOTES_HOME)
+
+
 def db_connect(db=DATABASE):
+    check_dir()
     return sqlite3.connect(db)
 
 
@@ -58,11 +68,15 @@ def db_get_note(note_id):
         return cursor.fetchone()
 
 
-def db_view_notes(limit):
+def db_view_notes(note_id, limit):
+    _id = note_id if note_id else "*"
     with db_connect() as conn:
         cursor = conn.cursor()
-        for i, row in enumerate(cursor.execute('SELECT * FROM notes ORDER BY id DESC')):
-            if i < limit:
+        for i, row in enumerate(cursor.execute(f'SELECT {_id} FROM notes ORDER BY id DESC')):
+            if _id == "*":
+                if i < limit:
+                    print(row)
+            else:
                 print(row)
 
 
