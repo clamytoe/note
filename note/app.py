@@ -56,7 +56,7 @@ def main():
     time = params.get("time")
 
     # edit note id
-    note_id = params.get("note_id")
+    edit_id = params.get("edit_id")
 
     # show notes and tags
     show_notes = params.get("show_notes")
@@ -95,8 +95,8 @@ def main():
         if show_notes:
             list_notes(show_limit)
 
-        if note_id:
-            edit_note(note_id)
+        if edit_id:
+            edit_note(edit_id)
 
 
 if __name__ == "__main__":

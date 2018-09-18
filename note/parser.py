@@ -41,7 +41,7 @@ def get_params():
 
     edit_parser = subparsers.add_parser("edit")
     edit_parser.add_argument(
-        "note_id",
+        "edit_id",
         type=int,
         help="Edit an existing note"
     )
