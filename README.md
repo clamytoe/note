@@ -10,6 +10,8 @@
 
 NOTE: This app was generated with [Cookiecutter](https://github.com/audreyr/cookiecutter) along with [@clamytoe's](https://github.com/clamytoe) [toepack](https://github.com/clamytoe/toepack) project template.
 
+This project is still in very active development and is not ready to be used just yet.
+
 ### Initial setup
 ```bash
 cd Projects
@@ -39,7 +41,19 @@ pip install -e .
 
 ## Usage
 ```bash
-note
+noteusage: note [-h] {add,delete,edit,show,stats} ...
+
+Note Taking Utility
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+commands:
+  valid commands
+
+  {add,delete,edit,show,stats}
+                        additional help available for each
+
 ```
 
 ## Contributing
