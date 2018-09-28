@@ -31,26 +31,37 @@ def get_params():
         default=time,
         help="The time in HH:MM:SS format"
     )
-    add_parser.add_argument(
-        "-t", "--tag",
-        dest="tags",
-        action="append",
-        help="Add a category tag for the note",
-        required=False
-    )
 
     delete_parser = subparsers.add_parser("delete")
     delete_parser.add_argument(
-        "delete_id",
+        "-n", "--note",
+        dest="delete_note",
         type=int,
-        help="Delete the selected note"
+        help="Delete the selected note",
+        required=False
+    )
+    delete_parser.add_argument(
+        "-t", "--tag",
+        dest="delete_tag",
+        type=int,
+        help="Delete the selected tag",
+        required=False
     )
 
     edit_parser = subparsers.add_parser("edit")
     edit_parser.add_argument(
-        "edit_id",
+        "-n", "--note",
+        dest="edit_note",
         type=int,
-        help="Edit the selected note"
+        help="Edit the selected note",
+        required=False
+    )
+    edit_parser.add_argument(
+        "-t", "--tag",
+        dest="edit_tag",
+        type=int,
+        help="Edit the selected note",
+        required=False
     )
 
     list_parser = subparsers.add_parser("show")
@@ -60,6 +71,13 @@ def get_params():
         type=int,
         default=-1,
         help="Show a specific note by providing its id",
+        required=False
+    )
+    list_parser.add_argument(
+        "-t", "--tags",
+        dest="show_tags",
+        action="store_true",
+        help="Show existing tags",
         required=False
     )
     list_parser.add_argument(
