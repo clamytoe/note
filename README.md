@@ -41,7 +41,8 @@ pip install -e .
 
 ## Usage
 ```bash
-noteusage: note [-h] {add,delete,edit,show,stats} ...
+note
+usage: note [-h] {add,delete,edit,show,stats} ...
 
 Note Taking Utility
 
