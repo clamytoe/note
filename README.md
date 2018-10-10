@@ -2,6 +2,8 @@
 > *Facilitates with jotting down what you've done or learned each day.*
 
 ![Python version][python-version]
+![Latest version][latest-version]
+[![Build Status][travis-image]][travis-url]
 [![BCH compliance][bch-image]][bch-url]
 [![GitHub issues][issues-image]][issues-url]
 [![GitHub forks][fork-image]][fork-url]
@@ -61,8 +63,7 @@ commands:
 Contributions are very welcome. Tests can be run with with `pytest -v`, please ensure that all tests are passing and that you've checked your code with the following packages before submitting a pull request:
 * black
 * isort
-* pycodestyle
-* pylint
+* mypy
 * pytest-cov
 
 I am not adhering to them strictly, but try to clean up what's reasonable.
@@ -74,9 +75,13 @@ Distributed under the terms of the [MIT](https://opensource.org/licenses/MIT) li
 If you encounter any problems, please [file an issue](https://github.com/clamytoe/toepack/issues) along with a detailed description.
 
 ## Changelog
+* **v0.1.1** Workable version.
 * **v0.1.0** Initial commit.
 
 [python-version]:https://img.shields.io/badge/python-3.7-brightgreen.svg
+[latest-version]:https://img.shields.io/badge/version-0.1.1-blue.svg
+[travis-image]:https://travis-ci.org/clamytoe/note.svg?branch=master
+[travis-url]:https://travis-ci.org/clamytoe/note
 [bch-image]:https://bettercodehub.com/edge/badge/clamytoe/note?branch=master
 [bch-url]:https://bettercodehub.com/
 [issues-image]:https://img.shields.io/github/issues/clamytoe/note.svg

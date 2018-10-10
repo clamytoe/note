@@ -3,8 +3,7 @@ channels:
   - defaults
 dependencies:
   - isort=4.3.4
-  - pycodestyle=2.4.0
-  - pylint=2.1.1
+  - mypy=0.630
   - pytest=3.7.4
   - pytest-cov=2.6.0
   - python=3.7.0
